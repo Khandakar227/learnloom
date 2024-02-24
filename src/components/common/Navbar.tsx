@@ -16,12 +16,12 @@ export default function Navbar() {
               </div>
           </Link>
           {
-            isLoading ? <span>Loading..</span>
+            isLoading ? <span className="loader" />
             :
             !user ?
             <a className="block px-4 py-2 rounded-md bg-purple-950 shadow-sm" href="/api/auth/login">Login</a>
             :
-            <a className="bg-purple-400 shadow rounded-2xl h-9 w-9 border-purple-950 border" href="/api/auth/me"></a>
+            <a className="bg-purple-400 shadow rounded-full h-10 w-10 border-purple-950 border" href="/api/auth/me"></a>
           }
       </div>
     </div>
