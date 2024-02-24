@@ -38,3 +38,17 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## Database ER Diagram
+**Student Attributes:** id(primary key), email, name, password(not required now), bio, profile_picture\
+**Course Attributes:** course_id(primary key), title, description, teacher_id (foreign key references Teacher), category, price (optional), and many other fields\
+**Teacher Attributes:** teacher_id(primary key), name, email, password, bio, profile_picture (optional), expertise(composite)\
+**Enrollment Attributes:** enrollment_id (primary key), student_id (foreign key references Student), course_id (foreign key references Course), start_date, completion_date (optional)\
+**Feedback Attributes:** feedback_id (primary key), student_id (foreign key references Student), course_id (foreign key references Course), rating, comment, date\
+**Comment Attributes:** comment_id (primary key), enrollment_id (foreign key references Enrollment), content, date, course_id (foreign key references Course), reply_of(foreign key references Comment)
+
+Student <------> Course\
+Teacher <------- Course\
+FeedBack ------- Student\
+FeedBack ------> Course\
+Student <------> Comment
