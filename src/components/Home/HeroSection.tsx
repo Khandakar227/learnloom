@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { EvervaultCard } from "../common/evervault-card"
 
 function HeroSection() {
   return (
@@ -9,7 +10,7 @@ function HeroSection() {
           <p className="pt-5">We believe in the power of education to transform lives. Our platform offers a diverse range of educational resources and tools to help you excel in your academic journey.</p>
         </div>
         <div className="flex justify-center items-center">
-          <Image src={"/images/illustration.jpg"} width={400} height={400} alt="Learn loom illustration"/>
+          <EvervaultCard/>
         </div>
     </section>
   )
