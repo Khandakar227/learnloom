@@ -42,7 +42,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ## Database ER Diagram
 **Student Attributes:** id(primary key), email, name, password(not required now), bio, profile_picture\
 **Course Attributes:** course_id(primary key), title, description, teacher_id (foreign key references Teacher), category, price (optional), and many other fields\
-**Teacher Attributes:** teacher_id(primary key), name, email, password, bio, profile_picture (optional), expertise(composite)\
+**Teacher Attributes:** teacher_id(primary key), name, email, bio, profile_picture (optional), expertise(composite)\
 **Enrollment Attributes:** enrollment_id (primary key), student_id (foreign key references Student), course_id (foreign key references Course), start_date, completion_date (optional)\
 **Feedback Attributes:** feedback_id (primary key), student_id (foreign key references Student), course_id (foreign key references Course), rating, comment, date\
 **Comment Attributes:** comment_id (primary key), enrollment_id (foreign key references Enrollment), content, date, course_id (foreign key references Course), reply_of(foreign key references Comment)

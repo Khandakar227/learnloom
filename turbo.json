@@ -4,7 +4,8 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": ["DB_NAME", "DB_USERNAME", "DB_PASSWORD"]
     },
     "lint": {
       "dependsOn": ["^lint"]
