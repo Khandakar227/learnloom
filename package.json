@@ -1,31 +1,37 @@
 {
   "name": "learnloom",
-  "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "@auth0/nextjs-auth0": "^3.5.0",
-    "clsx": "^2.1.0",
-    "framer-motion": "^11.0.12",
-    "next": "14.1.0",
-    "react": "^18",
-    "react-dom": "^18",
-    "sqlite3": "^5.1.7",
-    "tailwind-merge": "^2.2.1"
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "prettier": "^3.2.5",
+    "turbo": "latest",
+    
+    "@types/mysql": "^2.15.26",
     "@types/sqlite3": "^3.1.11",
     "autoprefixer": "^10.0.1",
     "postcss": "^8",
-    "tailwindcss": "^3.3.0",
-    "typescript": "^5"
+    "tailwindcss": "^3.3.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@9.6.6",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "dependencies": {
+    "tailwind-merge": "^2.2.1",
+    "@auth0/nextjs-auth0": "^3.5.0",
+    "clsx": "^2.1.0",
+    "framer-motion": "^11.0.12",
+    "mysql": "^2.18.1"
   }
 }
