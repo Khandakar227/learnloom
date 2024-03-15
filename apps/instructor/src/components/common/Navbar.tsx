@@ -3,9 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 import AvatarButton from "./AvatarButton";
 
-export default function Navbar() {
 
+export default function Navbar() {
   const { user, error, isLoading } = useUser();
+
   return (
     <div className="bg-stone-700 shadow">
       <div className="px-4 py-2 flex justify-between items-center max-w-7xl mx-auto">
@@ -20,7 +21,7 @@ export default function Navbar() {
             isLoading ? <span className="loader" />
             :
             !user ?
-            <a className="block px-4 py-2 rounded-md bg-purple-950 shadow-sm" href="/api/auth/login">Login</a>
+            <a className="block px-4 py-2 rounded-md bg-cyan-950 shadow-sm" href="/api/auth/login">Login</a>
             :
             <AvatarButton />
           }

@@ -1,6 +1,10 @@
+import Navbar from "@/components/common/Navbar"
+
 function Home() {
   return (
-    <div>Instructor</div>
+    <div>
+      <Navbar/>
+    </div>
   )
 }
 
