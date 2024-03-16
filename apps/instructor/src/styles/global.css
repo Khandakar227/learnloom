@@ -45,6 +45,10 @@
   .course-image-dropzone {@apply grid text-center py-8 px-2;}
   .course-image-dropzone button svg {@apply max-w-6;}
   .course-image-dropzone div {@apply text-sm;}
+
+  .dropzone {
+    @apply px-4 py-12 text-center border border-dashed bg-black rounded-lg;
+  }
 }
 
 

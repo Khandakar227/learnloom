@@ -5,7 +5,8 @@
   "exports": {
     ".": "./index.ts",
     "./server": "./server/index.ts",
-    "./client": "./client/index.ts"
+    "./client": "./client/index.ts",
+    "./categories": "./data/categories.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

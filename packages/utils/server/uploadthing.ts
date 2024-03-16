@@ -12,7 +12,7 @@ export const ourFileRouter = {
         const user = await getSession(req, res);
         
         if(!user) throw new UploadThingError("Unauthorized");
-
+        
         return { user: user.user || {} };
     })
     .onUploadComplete(async ({ metadata, file }) => {
