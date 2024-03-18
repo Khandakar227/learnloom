@@ -18,7 +18,7 @@ export default function Navbar() {
               </div>
           </Link>
           {
-            isLoading ? <span className="loader" />
+            isLoading ? <span className="loader w-6" />
             :
             !user ?
             <a className="block px-4 py-2 rounded-md bg-cyan-950 shadow-sm" href="/api/auth/login">Login</a>
