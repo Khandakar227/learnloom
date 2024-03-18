@@ -1,7 +1,9 @@
+import toBase64 from '@/utils/toBase64';
 import { SetStateAction, Dispatch } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
+import Compressor from 'compressorjs';
 
 
 type UploadDropzoneProps = {
@@ -11,15 +13,21 @@ type UploadDropzoneProps = {
 
 export default function UploadDropzone({ file, setFile }: UploadDropzoneProps) {
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
-        onDrop: (acceptedFiles) => {
-            console.log(acceptedFiles)
-            setFile(acceptedFiles[0])
+        onDrop: async (acceptedFiles) => {
+            console.log(acceptedFiles);
+            new Compressor(acceptedFiles[0], {
+                quality: 0.8,
+                maxWidth: 800,
+                success(result) {
+                    setFile(result as File);
+                }
+            });
         },
         accept: {
             'image/*': [],
         },
         maxFiles: 1,
-        maxSize: 4096001
+        maxSize: 8192002
     });
 
     function clearPhoto() {
