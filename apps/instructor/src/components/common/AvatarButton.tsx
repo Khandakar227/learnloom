@@ -19,6 +19,7 @@ function AvatarButton() {
         <div className={`${ show ? "z-20" : "scale-y-0"} origin-top transition-all p-4 rounded-lg shadow min-w-40 absolute top-full right-0 bg-zinc-950`}>
             <Link href={"/profile"} className="block w-full p-2 transition-all hover:text-black hover:bg-green-400">Profile</Link>
             <Link href={"/dashboard"} className="block w-full p-2 transition-all hover:text-black hover:bg-green-400">Dashboard</Link>
+            <Link href={"/courses"} className="block w-full p-2 transition-all hover:text-black hover:bg-green-400">Courses</Link>
             <Link href={"/api/auth/logout"} className="block w-full p-2 transition-all hover:text-black hover:bg-green-400">Log out</Link>
         </div>
     </div>

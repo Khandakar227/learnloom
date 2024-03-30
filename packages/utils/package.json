@@ -6,7 +6,8 @@
     ".": "./index.ts",
     "./server": "./server/index.ts",
     "./client": "./client/index.ts",
-    "./categories": "./data/categories.ts"
+    "./categories": "./data/categories.ts",
+    "./types": "./types/index.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",

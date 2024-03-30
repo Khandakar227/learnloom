@@ -6,19 +6,13 @@ import CourseImageUpload from '@/components/courses/UploadDropzone';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from '@auth0/nextjs-auth0';
 import { getInstructor } from '@repo/utils'
-
-type CourseData = {
-  name: string,
-  description: string,
-  imageUrl: string,
-  price: number,
-  isPublished: boolean,
-  categoryId: string,
-};
+import { CourseInputInfo } from '@repo/utils/types';
+import { useUploadThing } from '@repo/utils/client';
+import { toast } from 'react-toastify';
 
 type Categories = {id: string, name: string}
 
-const initialData:CourseData = {
+const initialData:CourseInputInfo = {
   name: "",
   description: "",
   imageUrl: "",
@@ -32,6 +26,7 @@ export default function AddCourse() {
   const [courseData, setCourseData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Categories []>([]);
+  const {startUpload} = useUploadThing("courseImage");
 
 
   useEffect(() => {
@@ -58,13 +53,32 @@ export default function AddCourse() {
     }))
   }
 
-  function handleSubmit(e:FormEvent) {
+  async function handleSubmit(e:FormEvent) {
     e.preventDefault();
-    setLoading(true);
-    // Upload the image first
-    // set the link to course data
-    // send the data
-    console.log(courseData)
+    try {
+      let imageUrl = "";
+      setLoading(true);
+      // Upload the image first
+      if(coverPhoto && coverPhoto.name) {
+        const fileRes = await startUpload([coverPhoto]);
+        // set the link to course data
+        imageUrl = fileRes ? fileRes[0].url : "";
+      }
+      // send the data
+      await fetch('/api/course', {
+        method: 'POST',
+        headers: {
+          'Content-type': 'application/json'
+        },
+        body: JSON.stringify({...courseData, imageUrl})
+      })
+      console.log(courseData);
+      setLoading(false)
+      toast.success("Course added.");
+    } catch (error) {
+      setLoading(false);
+      toast.success("[Error]: " + (error as Error).message);
+    }
   }
 
   function onChange(e:ChangeEvent) {

@@ -4,7 +4,8 @@
   "private": true,
   "exports": {
     "./cn": "./src/cn.ts",
-    "./input": "./src/input.tsx"
+    "./input": "./src/input.tsx",
+    "./course-description": "./src/CourseDescription.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
