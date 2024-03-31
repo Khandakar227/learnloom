@@ -69,7 +69,7 @@ export const addCourse = async (course: Course) => {
   }
 };
 
-export const getCourseByUser = async (email:string) => {
+export const getCourseByUser = async (email: string) => {
   const conn = await db.getConnection();
   try {
     const query = `SELECT course.*, category.name as category FROM course JOIN category on category.id = course.categoryId JOIN instructor on instructor.id = course.instructorId where instructor.email = ?`;
@@ -77,11 +77,11 @@ export const getCourseByUser = async (email:string) => {
     return courses[0];
   } catch (error) {
     console.log(error);
-    return []
+    return [];
   } finally {
     conn.release();
   }
-}
+};
 
 export const getInstructor = async (email: string) => {
   const conn = await db.getConnection();
@@ -115,7 +115,32 @@ export const getInstructorId = async (email: string) => {
   try {
     const query = `SELECT id FROM instructor WHERE email = ?`;
     const instructor = await conn.query(query, [email]);
-    return (instructor[0] as RowDataPacket)[0].id;;
+    return (instructor[0] as RowDataPacket)[0].id;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const updateCourse = async (id: string, course: CourseInputInfo) => {
+  const conn = await db.getConnection();
+  try {
+    let setClause = "",
+      values: (string | number | boolean)[] = [];
+
+    const keys = Object.keys(course);
+    keys.forEach((key) => {
+      if(key == 'instructorId') return;
+      setClause += `${key} = ?,`;
+      values.push(course[key as keyof CourseInputInfo]);
+    });
+
+    setClause.slice(0, -2); // to remove the trailing comma
+    
+    const query = `UPDATE course SET ${setClause} WHERE id = ?`;
+    const updatedCourse = await conn.query(query, values);
+    return (updatedCourse[0] as RowDataPacket)[0]
   } catch (error) {
     console.log(error);
   } finally {

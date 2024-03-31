@@ -25,16 +25,15 @@ export default async function handler(
 async function handleGetCourse(req: NextApiRequest, res: NextApiResponse) {
   try {
     const session = await getSession(req, res);
-
     if (!session)
       return res.status(403).json({ error: true, message: "Unauthorized" });
 
     const courses = await getCourseByUser(session?.user.email);
-    
-    res.status(200).json({error: false, courses});
+
+    res.status(200).json({ error: false, courses });
   } catch (error) {
     res.status(500).json({ error: true, message: "Internal Error" });
-  }  
+  }
 }
 
 async function handleAddCourse(req: NextApiRequest, res: NextApiResponse) {
@@ -44,7 +43,7 @@ async function handleAddCourse(req: NextApiRequest, res: NextApiResponse) {
       return res.status(403).json({ error: true, message: "Unauthorized" });
 
     const instructorId = await getInstructorId(session.user.email);
-    
+
     const { name, price, isPublished, description, categoryId, imageUrl } =
       req.body as CourseInputInfo;
 
@@ -57,8 +56,8 @@ async function handleAddCourse(req: NextApiRequest, res: NextApiResponse) {
       categoryId,
       imageUrl,
     });
-    
-    res.status(200).json({error: false, message: "New course added"});
+
+    res.status(200).json({ error: false, message: "New course added" });
   } catch (error) {
     res.status(500).json({ error: true, message: "Internal Error" });
   }

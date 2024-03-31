@@ -7,6 +7,7 @@ import {
   addCourse,
   getCourseByUser,
   getInstructorId,
+  updateCourse,
   User,
 } from "./db/queries";
 import { cn } from "../ui/src/cn";
@@ -22,5 +23,6 @@ export {
   addCourse,
   getInstructorId,
   getCourseByUser,
+  updateCourse,
 };
 export type { User };
