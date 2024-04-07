@@ -1,7 +1,11 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { CourseInputInfo } from "@repo/utils/types";
+import { ModuleInputInfo } from "@repo/utils/types";
 import { getSession } from "@auth0/nextjs-auth0";
 import { queries } from "@repo/utils";
+
+interface ModuleProps extends ModuleInputInfo {
+  courseId: string;
+}
 
 export default async function handler(
   req: NextApiRequest,
@@ -10,13 +14,11 @@ export default async function handler(
   try {
     switch (req.method) {
       case "POST":
-        handleAddCourse(req, res);
+        handleAddModule(req, res);
         break;
       case "GET":
-        handleGetAllCourses(req, res);
-        break;
+        handleGetAllModules(req, res);
       default:
-        res.status(405).json({error: true, message: "Method Not Allowed"});
         break;
     }
   } catch (error) {
@@ -24,42 +26,31 @@ export default async function handler(
   }
 }
 
-async function handleGetAllCourses(req: NextApiRequest, res: NextApiResponse) {
+async function handleGetAllModules(req: NextApiRequest, res: NextApiResponse) {
   try {
     const session = await getSession(req, res);
     if (!session)
       return res.status(403).json({ error: true, message: "Unauthorized" });
-
-    const courses = await queries.getCourseByUser(session?.user.email);
-
-    res.status(200).json({ error: false, courses });
+    const { courseId } = req.query;
+    if(!courseId) return res.status(401).json({error: true, message: "No course has been specified"});
+    const modules = await queries.getAllModules(courseId.toString());
+    res.status(200).json({ error: false, modules});
   } catch (error) {
     res.status(500).json({ error: true, message: "Internal Error" });
   }
 }
 
-async function handleAddCourse(req: NextApiRequest, res: NextApiResponse) {
+async function handleAddModule(req: NextApiRequest, res: NextApiResponse) {
   try {
     const session = await getSession(req, res);
     if (!session)
       return res.status(403).json({ error: true, message: "Unauthorized" });
 
-    const instructorId = await queries.getInstructorId(session.user.email);
+    const { name, details, videoUrl, courseId } = req.body as ModuleProps;
 
-    const { name, price, isPublished, description, categoryId, imageUrl } =
-      req.body as CourseInputInfo;
+    const module = await queries.addModule({name, details, courseId, videoUrl});
 
-    const course = await queries.addCourse({
-      instructorId,
-      name,
-      price,
-      isPublished,
-      description,
-      categoryId,
-      imageUrl,
-    });
-
-    res.status(200).json({ error: false, message: "New course added" });
+    res.status(200).json({ error: false, message: "New module added", module });
   } catch (error) {
     res.status(500).json({ error: true, message: "Internal Error" });
   }

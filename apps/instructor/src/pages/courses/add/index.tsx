@@ -5,7 +5,7 @@ import Input from "@repo/ui/input";
 import CourseImageUpload from '@/components/courses/UploadDropzone';
 import { GetServerSidePropsContext } from 'next';
 import { getSession } from '@auth0/nextjs-auth0';
-import { getInstructor } from '@repo/utils'
+import { queries } from '@repo/utils'
 import { CourseInputInfo } from '@repo/utils/types';
 import { useUploadThing } from '@repo/utils/client';
 import { toast } from 'react-toastify';
@@ -153,7 +153,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
         destination: "/"
       }
     }
-    const userData = await getInstructor(user.user.email)
+    const userData = await queries.getInstructor(user.user.email)
     console.log(userData)
     return { props: {} }
 }

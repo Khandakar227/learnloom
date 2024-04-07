@@ -1,11 +1,12 @@
 import Input from "@repo/ui/input"
 import Editor from "./Editor"
 import { ModuleInputInfo } from "@repo/utils/types"
-import { ChangeEvent, FormEvent, useState } from "react"
+import { ChangeEvent, FormEvent, useEffect, useState } from "react"
 import VideoDropZone, { useVideo } from "./VideoDropZone"
 import { MdClose } from "react-icons/md"
 import { v4 as uuid4 } from "uuid"
 import { toast } from "react-toastify"
+import { useRouter } from "next/router"
 
 const initialData: ModuleInputInfo = {
     name: "",
@@ -15,15 +16,24 @@ const initialData: ModuleInputInfo = {
 
 type CreateModuleProps = {
     courseId: string;
+    className?: string;
+    hideForm?: () => void;
 }
 
 enum UPLOAD_STATUS { STARTED, NOT_STARTED, DONE };
 
-function CreateModule({ courseId }: CreateModuleProps) {
+function CreateModule({ courseId, className, hideForm }: CreateModuleProps) {
     const [videoUploadProgress, setVideoUploadProgress] = useState(0);
     const [module, setModule] = useState(initialData);
+    const [loading, setLoading] = useState(false);
     const [video, setVideo] = useVideo();
     const [uploadStatus, setUploadStatus] = useState<UPLOAD_STATUS>(UPLOAD_STATUS.NOT_STARTED);
+
+    useEffect(() => {
+        if(uploadStatus == UPLOAD_STATUS.DONE) {
+            
+        }
+    }, [uploadStatus])
 
     function onEditModuleDesc(value: string) {
         setModule(v => ({
@@ -43,7 +53,7 @@ function CreateModule({ courseId }: CreateModuleProps) {
         })
     }
 
-    const uploadFile = (moduleId: string, file: File) => {
+    const uploadFile = async (moduleId: string, file: File) => {
         setUploadStatus(UPLOAD_STATUS.STARTED);
         const formData = new FormData();
         formData.append('file', file);
@@ -56,34 +66,55 @@ function CreateModule({ courseId }: CreateModuleProps) {
                 console.log("Uploaded: ", percentCompleted);
             }
         });
+        return new Promise((resolve, reject) => {
         xhr.onreadystatechange = (e) => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 200) {
                     const response = JSON.parse(xhr.responseText);
                     setModule(v => ({ ...v, videoUrl: response.filePath }));
-                    setUploadStatus(UPLOAD_STATUS.DONE);
-                    toast.success("Module added");
+                    resolve(response.filePath);
                 } else {
                     console.error('Error uploading file:', xhr.statusText);
-                    setUploadStatus(UPLOAD_STATUS.DONE);
                     toast.error("Unexpected error occured while uploading the video");
+                    reject("");
                 }
+                setUploadStatus(UPLOAD_STATUS.DONE);
             }
         };
         xhr.open('POST', `/api/upload/video/${courseId}/${moduleId}`, true);
         xhr.send(formData);
+    });
     }
 
-    function onSubmit(e: FormEvent) {
+    async function onSubmit(e: FormEvent) {
         e.preventDefault();
-        const moduleId = uuid4();
-        uploadFile(moduleId, video as File);
+        try {
+            const moduleId = uuid4();
+            const videoUrl = await uploadFile(moduleId, video as File);
+            
+            // send the data
+            await fetch(`/api/module/${moduleId}?courseId=${courseId}`, {
+                method: 'POST',
+                headers: {
+                'Content-type': 'application/json'
+                },
+                body: JSON.stringify({...module, videoUrl: videoUrl || module.videoUrl})
+            })
+            console.log(module);
+            setLoading(false)
+            toast.success("Module added.");
+            if(hideForm) hideForm();
+        } catch (error) {
+            setLoading(false);
+            toast.success("[Error]: " + (error as Error).message);
+        }
+        
     }
     return (
-        <div className="p-4 rounded shadow shadow-black bg-zinc-900 max-w-7xl mx-auto">
+        <div className={`p-4 rounded shadow shadow-black bg-zinc-900 max-w-7xl mx-auto ${className}`}>
             <form onSubmit={onSubmit} className="relative">
                 <div className="pb-4">
-                    <Input id="name" type="text" label="Module Name" name="name" />
+                    <Input value={module.name} onChange={onInputChange} id="name" type="text" label="Module Name" name="name" />
                 </div>
                 <div className="pb-4">
                     {

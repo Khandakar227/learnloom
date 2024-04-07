@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2";
-import { CourseInputInfo } from "../types";
+import { CourseInputInfo, ModuleInputInfo } from "../types";
 
 export type User = {
   email: string;
@@ -123,24 +123,226 @@ export const getInstructorId = async (email: string) => {
   }
 };
 
+export const getCourse = async (id: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT course.*, category.name as category FROM course JOIN category on category.id = course.categoryId JOIN instructor on instructor.id = course.instructorId where course.id = ?`;
+    const courses = await conn.query(query, [id]);
+    return (courses[0] as RowDataPacket)[0];
+  } catch (error) {
+    console.log(error);
+    return [];
+  } finally {
+    conn.release();
+  }
+};
+
 export const updateCourse = async (id: string, course: CourseInputInfo) => {
   const conn = await db.getConnection();
   try {
     let setClause = "",
       values: (string | number | boolean)[] = [];
 
-    const keys = Object.keys(course);
+    const keys = Object.keys(course) as (keyof CourseInputInfo)[];
     keys.forEach((key) => {
-      if(key == 'instructorId') return;
+      if (key == 'name' || key == 'isPublished' || key == 'categoryId' || key == 'description' || key == 'imageUrl' || key == 'price') {
+        setClause += `${key} = ?,`;
+        values.push(course[key as keyof CourseInputInfo]);
+      }
+    });
+
+    setClause = setClause.slice(0, -1); // to remove the trailing comma
+    values.push(id);
+    const query = `UPDATE course SET ${setClause} WHERE id = ?`;
+    const updatedCourse = await conn.query(query, values);
+    return (updatedCourse[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+    return null
+  } finally {
+    conn.release();
+  }
+};
+
+interface ModuleProps extends ModuleInputInfo {
+  courseId: string;
+}
+
+export const getAllModules = async (courseId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT * FROM module WHERE courseId = ?`;
+    const modules = await conn.query(query, [courseId]);
+    return (modules[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const getModule = async (id:string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT * FROM module WHERE id = ?`;
+    const module = await conn.query(query, [id]);
+    return (module[0] as RowDataPacket)[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+}
+
+export const addModule = async (module: ModuleProps) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `INSERT INTO module (id, name, details, videoUrl, courseId) VALUES (UUID(), ?, ?, ?, ?)`;
+    await conn.query(query, [
+      module.name,
+      module.details,
+      module.videoUrl,
+      module.courseId,
+    ]);
+    console.log(`Module "${module.name}" added to course ${module.courseId}`);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+
+export const addModuleById = async (moduleId:string, module: ModuleProps) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `INSERT INTO module (id, name, details, videoUrl, courseId) VALUES (?, ?, ?, ?, ?)`;
+    await conn.query(query, [
+      moduleId,
+      module.name,
+      module.details,
+      module.videoUrl,
+      module.courseId,
+    ]);
+    console.log(`Module "${module.name}" added to course ${module.courseId}`);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+export const updateModule = async (
+  moduleId: string,
+  module: ModuleInputInfo
+) => {
+  const conn = await db.getConnection();
+  try {
+    let setClause = "",
+      values: (string | number | boolean)[] = [];
+
+    const keys = Object.keys(module);
+
+    keys.forEach((key) => {
+      if (key == "courseId") return;
       setClause += `${key} = ?,`;
-      values.push(course[key as keyof CourseInputInfo]);
+      values.push(module[key as keyof ModuleInputInfo]);
     });
 
     setClause.slice(0, -2); // to remove the trailing comma
-    
-    const query = `UPDATE course SET ${setClause} WHERE id = ?`;
-    const updatedCourse = await conn.query(query, values);
-    return (updatedCourse[0] as RowDataPacket)[0]
+    values.push(moduleId);
+    const query = `UPDATE module SET ${setClause} WHERE id = ?`;
+    const updatedModule = await conn.query(query, values);
+    return (updatedModule[0] as RowDataPacket)[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+
+export const deleteModule = async (moduleId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `DELETE FROM module WHERE id = ?`;
+    await conn.query(query, [moduleId]);
+    console.log(`Module "${moduleId}" deleted`);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const deleteCourse = async (courseId: string) => {
+  const conn = await db.getConnection();
+  try {
+    await conn.beginTransaction();
+
+    const deleteEnrollments = `DELETE FROM enrolled WHERE courseID = ?`;
+    await conn.query(deleteEnrollments, [courseId]);
+
+    const deleteModules = `DELETE FROM module WHERE courseID = ?`;
+    await conn.query(deleteModules, [courseId]);
+
+    const deleteCourse = `DELETE FROM course WHERE id = ?`;
+    await conn.query(deleteCourse, [courseId]);
+
+    await conn.commit();
+    console.log(`Course "${courseId}" deleted`);
+  } catch (error) {
+    await conn.rollback();
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const searchCourse = async (searchTerm: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT * FROM course WHERE name LIKE ? OR description LIKE ?`;
+    const searchResults = await conn.query(query, [`%${searchTerm}%`, `%${searchTerm}%`]);
+    return searchResults[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const enrollStudent = async (studentId: string, courseId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `INSERT INTO enrolled (studentID, courseID) VALUES (?, ?)`;
+    await conn.query(query, [studentId, courseId]);
+    console.log(`Student with ID "${studentId}" enrolled in course "${courseId}"`);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const getEnrolledCourses = async (studentId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT c.* FROM course c JOIN enrolled e ON c.id = e.courseID WHERE e.studentID = ?`;
+    const courses = await conn.query(query, [studentId]);
+    return courses;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const publishCourse = async (courseId: string, isPublished: boolean) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `UPDATE course SET isPublished = ? WHERE id = ?`;
+    await conn.query(query, [isPublished, courseId]);
+    console.log(`Course "${courseId}" published status: ${isPublished}`);
   } catch (error) {
     console.log(error);
   } finally {

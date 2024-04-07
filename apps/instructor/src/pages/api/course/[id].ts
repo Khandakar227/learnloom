@@ -1,20 +1,25 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "@auth0/nextjs-auth0";
-import { updateCourse } from "@repo/utils";
+import { queries } from "@repo/utils";
 
 export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     try {
         switch (req.method) {
           case "GET":
             handleGetCourse(req, res);
+            break;
           case "PUT":
             handlePutCourse(req, res);
             break;
-            default:
+          case "DELETE":
+            handleDeleteCourse(req, res);
+            break;
+          default:
+            res.status(405).json({error: true, message: "Method Not Allowed"});
             break;
         }
-        res.status(200).json({error: false});
     } catch (error) {
+        console.log(error)
         res.status(500).json({error: true, message: "Internal Error"});
     }
 }
@@ -27,9 +32,10 @@ async function handlePutCourse(req: NextApiRequest, res: NextApiResponse) {
       
       const { id } = req.query;
       const course = req.body;
-      const updatedCourse = await  updateCourse(id as string, course);
+      const updatedCourse = await  queries.updateCourse(id as string, course);
       res.status(200).json({error: false, course:updatedCourse});
     } catch (error) {
+      console.log(error)
       res.status(500).json({ error: true, message: "Internal Error" });
     }
   }
@@ -42,9 +48,25 @@ async function handleGetCourse(req: NextApiRequest, res: NextApiResponse) {
       return res.status(403).json({ error: true, message: "Unauthorized" });
     
     const { id } = req.query;
-    // const updatedCourse = await  updateCourse(id as string, course);
-    res.status(200).json({error: false,});
+    const course = await  queries.getCourse(id as string);
+    res.status(200).json({error: false, course});
   } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: true, message: "Internal Error" });
+  }
+}
+
+async function handleDeleteCourse(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const session = await getSession(req, res);
+    if (!session)
+      return res.status(403).json({ error: true, message: "Unauthorized" });
+    
+    const { id } = req.query;
+    const course = await queries.deleteCourse(id as string);
+    res.status(200).json({error: false, course});
+  } catch (error) {
+    console.log(error)
     res.status(500).json({ error: true, message: "Internal Error" });
   }
 }

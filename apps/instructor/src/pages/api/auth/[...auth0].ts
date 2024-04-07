@@ -1,5 +1,5 @@
 import { handleAuth, handleCallback } from "@auth0/nextjs-auth0";
-import { addInstructor } from "@repo/utils";
+import { queries } from "@repo/utils";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default handleAuth({
@@ -9,7 +9,7 @@ export default handleAuth({
         afterCallback: async(req, res, session, state) => {
             const user = session.user;
             // store user in db
-            await addInstructor({email: user.email, name: user.name});
+            await queries.addInstructor({email: user.email, name: user.name});
             
             return session;
         },

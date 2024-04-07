@@ -1,6 +1,6 @@
 import Navbar from "@/components/common/Navbar";
 import { getSession } from "@auth0/nextjs-auth0";
-import { getInstructor } from "@repo/utils";
+import { queries } from "@repo/utils";
 import { CourseData } from "@repo/utils/types";
 import { GetServerSidePropsContext } from "next";
 import { useEffect, useState } from "react";
@@ -46,7 +46,7 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
         destination: "/"
       }
     }
-    const userData = await getInstructor(user.user.email)
+    const userData = await queries.getInstructor(user.user.email)
     console.log(userData)
     return { props: {} }
 }
