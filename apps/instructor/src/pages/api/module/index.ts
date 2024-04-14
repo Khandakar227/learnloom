@@ -46,9 +46,9 @@ async function handleAddModule(req: NextApiRequest, res: NextApiResponse) {
     if (!session)
       return res.status(403).json({ error: true, message: "Unauthorized" });
 
-    const { name, details, videoUrl, courseId } = req.body as ModuleProps;
+    const { name, orderNo, details, videoUrl, courseId } = req.body as ModuleProps;
 
-    const module = await queries.addModule({name, details, courseId, videoUrl});
+    const module = await queries.addModule({name, orderNo, details, courseId, videoUrl});
 
     res.status(200).json({ error: false, message: "New module added", module });
   } catch (error) {

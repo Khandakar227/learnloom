@@ -13,11 +13,12 @@ export type CourseData = {
 export type CourseModule = {
   id: string;
   name: string;
-  videoUrl: string;
-  details: string;
-  createdAt: string;
-  updatedAt: string;
   courseId: string;
+  createdAt: string;
+  details: string;
+  orderNo: number;
+  updatedAt: string;
+  videoUrl: string;
 };
 export type ModuleInputInfo = OmitMultiple<CourseModule, "courseId" | "id" | "createdAt" | "updatedAt">
 

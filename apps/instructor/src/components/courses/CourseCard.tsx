@@ -29,7 +29,7 @@ export default function CourseCard({course}:CourseCardProps) {
 
       <div className="flex justify-end items-center py-2 gap-8">
         <Link className="py-1 px-4 bg-green-700 text-sm rounded" href={"/courses/edit/"+course.id}>Edit</Link>
-        <Link className="py-1 px-4 bg-yellow-700 text-sm rounded" href={`/courses/${course.id}/module/`}>Add Modules</Link>
+        <Link className="py-1 px-4 bg-yellow-700 text-sm rounded" href={`/courses/${course.id}/`}>Add Modules</Link>
       </div>
     </div>
   )

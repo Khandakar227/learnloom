@@ -9,6 +9,7 @@ import { toast } from "react-toastify"
 import { useRouter } from "next/router"
 
 const initialData: ModuleInputInfo = {
+    orderNo: 0,
     name: "",
     details: "",
     videoUrl: "",
@@ -34,6 +35,16 @@ function CreateModule({ courseId, className, hideForm }: CreateModuleProps) {
             
         }
     }, [uploadStatus])
+
+    useEffect(() => {
+        fetch(`/api/course/count?courseId=${courseId}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.error) console.log(data.error)
+            else setModule(v => ({...v, orderNo: data.count ? data.count + 1 : 1}))
+        })
+        .catch(err => console.log(err))
+    }, [courseId])
 
     function onEditModuleDesc(value: string) {
         setModule(v => ({
@@ -115,6 +126,9 @@ function CreateModule({ courseId, className, hideForm }: CreateModuleProps) {
             <form onSubmit={onSubmit} className="relative">
                 <div className="pb-4">
                     <Input value={module.name} onChange={onInputChange} id="name" type="text" label="Module Name" name="name" />
+                </div>
+                <div className="pb-4">
+                <Input value={module.orderNo} onChange={onInputChange} id="orderNo" type="text" label="Module No." name="orderNo" />
                 </div>
                 <div className="pb-4">
                     {

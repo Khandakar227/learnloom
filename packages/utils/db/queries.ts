@@ -171,7 +171,20 @@ interface ModuleProps extends ModuleInputInfo {
 export const getAllModules = async (courseId: string) => {
   const conn = await db.getConnection();
   try {
-    const query = `SELECT * FROM module WHERE courseId = ?`;
+    const query = `SELECT * FROM module WHERE courseId = ? Order by orderNo ASC`;
+    const modules = await conn.query(query, [courseId]);
+    return (modules[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const getAllModulesLittleInfo = async (courseId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT id, name, orderNo FROM module WHERE courseId = ? Order by orderNo ASC`;
     const modules = await conn.query(query, [courseId]);
     return (modules[0] as RowDataPacket);
   } catch (error) {
@@ -197,9 +210,10 @@ export const getModule = async (id:string) => {
 export const addModule = async (module: ModuleProps) => {
   const conn = await db.getConnection();
   try {
-    const query = `INSERT INTO module (id, name, details, videoUrl, courseId) VALUES (UUID(), ?, ?, ?, ?)`;
+    const query = `INSERT INTO module (id, name, orderNo, details, videoUrl, courseId) VALUES (UUID(), ?, ?, ?, ?, ?)`;
     await conn.query(query, [
       module.name,
+      module.orderNo,
       module.details,
       module.videoUrl,
       module.courseId,
@@ -216,10 +230,11 @@ export const addModule = async (module: ModuleProps) => {
 export const addModuleById = async (moduleId:string, module: ModuleProps) => {
   const conn = await db.getConnection();
   try {
-    const query = `INSERT INTO module (id, name, details, videoUrl, courseId) VALUES (?, ?, ?, ?, ?)`;
+    const query = `INSERT INTO module (id, name, orderNo, details, videoUrl, courseId) VALUES (?, ?, ?, ?, ?, ?)`;
     await conn.query(query, [
       moduleId,
       module.name,
+      module.orderNo,
       module.details,
       module.videoUrl,
       module.courseId,
@@ -273,6 +288,19 @@ export const deleteModule = async (moduleId: string) => {
     conn.release();
   }
 };
+
+export const getModulesCountForCourse = async (courseId:string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `Select count(*) as moduleCount from module where courseID = ?`;
+    const moduleCount = await conn.query(query, [courseId]);
+    return (moduleCount[0] as RowDataPacket)[0]
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+}
 
 export const deleteCourse = async (courseId: string) => {
   const conn = await db.getConnection();

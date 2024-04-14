@@ -56,9 +56,9 @@ async function handleUpdateModule(req: NextApiRequest, res: NextApiResponse) {
       if (!id)
         return res.status(401).json({ error: true, message: "No module has been specified" });
   
-      const { name, details, videoUrl } = req.body as ModuleInputInfo;
+      const { name, orderNo, details, videoUrl } = req.body as ModuleInputInfo;
       const module = await queries.updateModule(id.toString(), {
-        name, details, videoUrl,
+        name, orderNo, details, videoUrl,
       });
       res.status(200).json({ error: false, module });
     } catch (error) {
@@ -94,10 +94,10 @@ async function handleAddModuleById(req: NextApiRequest, res: NextApiResponse) {
       const { id, courseId } = req.query;
       if (!id || !courseId)
         return res.status(401).json({ error: true, message: "No module or course has been specified" });
-  
-      const { name, details, videoUrl } = req.body as ModuleInputInfo;
+      console.log(req.body)
+      const { name, orderNo, details, videoUrl } = req.body as ModuleInputInfo;
       const module = await queries.addModuleById(id.toString(), {
-        name, details, videoUrl, courseId: courseId.toString()
+        name, orderNo, details, videoUrl, courseId: courseId.toString()
       });
       
       res.status(200).json({ error: false, module });

@@ -15,43 +15,85 @@
     text-wrap: balance;
   }
 
+  .loader {
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border-color: white;
+    border-width: 4px;
+    border-style: solid;
+    animation:
+      l20-1 0.8s infinite linear alternate,
+      l20-2 1.6s infinite linear;
+  }
+  @keyframes l20-1{
+    0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
+    12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
+    25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
+    50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+    62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
+    75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
+    100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+  }
+  @keyframes l20-2{ 
+    0%    {transform:scaleY(1)  rotate(0deg)}
+    49.99%{transform:scaleY(1)  rotate(135deg)}
+    50%   {transform:scaleY(-1) rotate(0deg)}
+    100%  {transform:scaleY(-1) rotate(-135deg)}
+  }
 
-.loader {
-  aspect-ratio: 1;
-  border-radius: 50%;
-  border-color: white;
-  border-width: 4px;
-  border-style: solid;
-  animation:
-    l20-1 0.8s infinite linear alternate,
-    l20-2 1.6s infinite linear;
+  /* Uploadthing dropzone */
+  .course-image-dropzone {@apply grid text-center py-8 px-2;}
+  .course-image-dropzone button svg {@apply max-w-6;}
+  .course-image-dropzone div {@apply text-sm;}
+
+  .dropzone {
+    @apply px-4 py-12 text-center border border-dashed bg-black rounded-lg;
+  }
+  .neo-dark {
+    border-radius: 20px;
+  background: #18181b;
+  box-shadow:  10px 10px 20px #141417, -10px -10px 20px #1c1c1f;
+  }
+  .neo-semi-dark {
+    border-radius: 20px;
+    background: #191919;
+    box-shadow:  10px 10px 20px #151515, -10px -10px 20px #1d1d1d;
+  }
+
+/* Heading Styles */
+.description h1 {
+  @apply text-3xl font-bold; /* Equivalent to font-size: 2.25rem; font-weight: 700; */
 }
-@keyframes l20-1{
-   0%    {clip-path: polygon(50% 50%,0       0,  50%   0%,  50%    0%, 50%    0%, 50%    0%, 50%    0% )}
-   12.5% {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100%   0%, 100%   0%, 100%   0% )}
-   25%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 100% 100%, 100% 100% )}
-   50%   {clip-path: polygon(50% 50%,0       0,  50%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
-   62.5% {clip-path: polygon(50% 50%,100%    0, 100%   0%,  100%   0%, 100% 100%, 50%  100%, 0%   100% )}
-   75%   {clip-path: polygon(50% 50%,100% 100%, 100% 100%,  100% 100%, 100% 100%, 50%  100%, 0%   100% )}
-   100%  {clip-path: polygon(50% 50%,50%  100%,  50% 100%,   50% 100%,  50% 100%, 50%  100%, 0%   100% )}
+.description h2 {
+  @apply text-2xl font-bold; /* Equivalent to font-size: 1.875rem; font-weight: 700; */
 }
-@keyframes l20-2{ 
-  0%    {transform:scaleY(1)  rotate(0deg)}
-  49.99%{transform:scaleY(1)  rotate(135deg)}
-  50%   {transform:scaleY(-1) rotate(0deg)}
-  100%  {transform:scaleY(-1) rotate(-135deg)}
+.description h3 {
+  @apply text-xl font-bold; /* Equivalent to font-size: 1.5rem; font-weight: 700; */
+}
+.description h4 {
+  @apply text-lg font-bold; /* Equivalent to font-size: 1.25rem; font-weight: 700; */
+}
+.description h5 {
+  @apply font-bold; /* Equivalent to font-size: 1.125rem; font-weight: 700; */
+}
+.description h6 {
+  @apply text-sm font-bold; /* Equivalent to font-size: 1.125rem; font-weight: 700; */
+}
+/* Paragraph Styles */
+.description p {
+  @apply text-base; /* Equivalent to font-size: 1rem; */
+}
+/* Link Styles */
+.description a {
+  @apply text-blue-500 underline; /* Equivalent to color: #3b82f6; text-decoration: underline; */
+}
+/* Code Styles */
+.description code {
+  @apply inline-block px-2 py-1 bg-gray-200 rounded text-sm font-mono; /* Example code styles */
 }
 
-/* Uploadthing dropzone */
-.course-image-dropzone {@apply grid text-center py-8 px-2;}
-.course-image-dropzone button svg {@apply max-w-6;}
-.course-image-dropzone div {@apply text-sm;}
 
-.dropzone {
-  @apply px-4 py-12 text-center border border-dashed bg-black rounded-lg;
 }
-}
-
 
 
 .ql-toolbar.ql-snow {

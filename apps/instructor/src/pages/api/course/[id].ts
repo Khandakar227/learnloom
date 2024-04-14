@@ -6,7 +6,8 @@ export default async function handler(req:NextApiRequest, res:NextApiResponse) {
     try {
         switch (req.method) {
           case "GET":
-            handleGetCourse(req, res);
+            if(req.query.id == 'count') return handleGetModuleCount(req, res);
+            else return handleGetCourse(req, res);
             break;
           case "PUT":
             handlePutCourse(req, res);
@@ -50,6 +51,22 @@ async function handleGetCourse(req: NextApiRequest, res: NextApiResponse) {
     const { id } = req.query;
     const course = await  queries.getCourse(id as string);
     res.status(200).json({error: false, course});
+  } catch (error) {
+    console.log(error)
+    res.status(500).json({ error: true, message: "Internal Error" });
+  }
+}
+
+async function handleGetModuleCount(req: NextApiRequest, res: NextApiResponse) {
+  try {
+    const session = await getSession(req, res);
+    if (!session)
+      return res.status(403).json({ error: true, message: "Unauthorized" });
+    
+    const { courseId } = req.query;
+    if(!courseId) return res.status(401).json({error: true, message: "Missing course ID"});
+    const count = await  queries.getModulesCountForCourse(courseId as string);
+    return res.status(200).json({error: false, count: count?.moduleCount || null});
   } catch (error) {
     console.log(error)
     res.status(500).json({ error: true, message: "Internal Error" });
