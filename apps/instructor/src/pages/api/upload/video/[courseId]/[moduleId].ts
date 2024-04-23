@@ -28,7 +28,7 @@ export default async function handler(
         .json({ error: true, message: "No course or module specified." });
 
     try {
-      const uploadDir = path.join(process.cwd(), `uploads/videos/${courseId}/${moduleId}`);
+      const uploadDir = path.join(process.cwd(), `public/uploads/videos/${courseId}/${moduleId}`);
       const isOk = await makeFolders(uploadDir);
       if (!isOk)
         return res.status(500).json({ error: true, message: "Internal Error" });
@@ -54,8 +54,13 @@ export default async function handler(
           reject();
         });
       });
-      console.log(filePath);
-      res.status(200).send({ message: "ok", filePath });
+
+      const protocol = req.headers["x-forwarded-proto"]+ "://";
+      
+      res.status(200).send({
+        message: "ok",
+        filePath: protocol + path.join(req.headers.host as string, filePath.substring("public/".length)).replace(/\\/g, '/')
+    });
     } catch (error) {
       console.log(error);
       res.status(400).send({ message: "Bad Request" });

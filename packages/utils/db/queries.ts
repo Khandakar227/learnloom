@@ -150,7 +150,6 @@ export const updateCourse = async (id: string, course: CourseInputInfo) => {
         values.push(course[key as keyof CourseInputInfo]);
       }
     });
-
     setClause = setClause.slice(0, -1); // to remove the trailing comma
     values.push(id);
     const query = `UPDATE course SET ${setClause} WHERE id = ?`;
@@ -258,12 +257,12 @@ export const updateModule = async (
     const keys = Object.keys(module);
 
     keys.forEach((key) => {
-      if (key == "courseId") return;
-      setClause += `${key} = ?,`;
-      values.push(module[key as keyof ModuleInputInfo]);
+      if (key != "courseId"){
+        setClause += `${key} = ?,`;
+        values.push(module[key as keyof ModuleInputInfo]);
+      }
     });
-
-    setClause.slice(0, -2); // to remove the trailing comma
+    setClause = setClause.slice(0, -1); // to remove the trailing comma
     values.push(moduleId);
     const query = `UPDATE module SET ${setClause} WHERE id = ?`;
     const updatedModule = await conn.query(query, values);

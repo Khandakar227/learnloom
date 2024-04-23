@@ -57,9 +57,11 @@ async function handleUpdateModule(req: NextApiRequest, res: NextApiResponse) {
         return res.status(401).json({ error: true, message: "No module has been specified" });
   
       const { name, orderNo, details, videoUrl } = req.body as ModuleInputInfo;
+      
       const module = await queries.updateModule(id.toString(), {
         name, orderNo, details, videoUrl,
       });
+      
       res.status(200).json({ error: false, module });
     } catch (error) {
       res.status(500).json({ error: true, message: "Internal Error" });

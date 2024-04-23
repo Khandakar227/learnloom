@@ -144,9 +144,7 @@ export default function EditCourse({course}:EditCourseProps) {
         <div className='pb-8'>
           <Input value={courseData.price} onChange={onChange} id="price" type='number' label="Course price (0 if free course)" min={0} name="price" placeholder="Price" />
         </div>
-        
         <p className='italic'>You can add course modules after you have saved the course.</p>
-        
         <div className='py-12'>
           <button disabled={loading} className='bg-green-600 text-white px-4 py-2 rounded-lg shadow'>
             {loading ? <span className='loader block w-4'></span> : "Save"}
