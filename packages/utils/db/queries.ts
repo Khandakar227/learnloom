@@ -123,6 +123,20 @@ export const getInstructorId = async (email: string) => {
   }
 };
 
+export const getCourses = async ({limit=20, offset=0}) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT course.*, category.name as category FROM course JOIN category on category.id = course.categoryId JOIN instructor on instructor.id = course.instructorId order by course.createdAt desc limit ? offset ?`;
+    const courses = await conn.query(query, [limit, offset]);
+    return (courses[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+    return [];
+  } finally {
+    conn.release();
+  }
+};
+
 export const getCourse = async (id: string) => {
   const conn = await db.getConnection();
   try {
