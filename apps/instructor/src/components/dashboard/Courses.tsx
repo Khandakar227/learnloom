@@ -29,7 +29,7 @@ function Courses() {
       }, []);
 
   return (
-    <div className="p-4 shadow-sm rounded-md neo-dark py-6">
+    <div className="p-4 shadow-sm rounded-md py-6 mt-8 block">
         <h3 className="text-3xl py-6"> Courses </h3>
         {
             ! courses.length && (<p className="py-12 opacity-50"> No courses has been added </p>)

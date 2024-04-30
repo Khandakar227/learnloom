@@ -130,7 +130,8 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
       props: {
         modules: JSON.parse(JSON.stringify(modules)),
         course: JSON.parse(JSON.stringify(course)),
-        module: JSON.parse(JSON.stringify(_module))
-      }
+        module: JSON.parse(JSON.stringify(_module)),
+        key: params.moduleId
+      },
     }
   }
