@@ -27,7 +27,7 @@ async function handleGetAllCourses(req: NextApiRequest, res: NextApiResponse) {
     if (limit && !isNaN(Number(limit)))  queryParameters.limit = +limit;
     if (offset && !isNaN(Number(offset))) queryParameters.offset = +offset;
 
-    const courses = await queries.getCourses(queryParameters);
+    const courses = await queries.getPublishedCourses(queryParameters);
     res.status(200).json({ error: false, courses });
   } catch (error) {
     res.status(500).json({ error: true, message: "Internal Error" });

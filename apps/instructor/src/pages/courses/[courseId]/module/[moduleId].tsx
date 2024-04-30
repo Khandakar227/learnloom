@@ -36,7 +36,7 @@ function Module({ modules, course, module }: CoursePageProps) {
             <Navbar />
             {
                 showCreateForm && (
-                    <div className="grid overflow-y-auto py-12 justify-center items-center fixed top-0 left-0 right-0 bottom-0">
+                    <div className="grid overflow-y-auto py-12 justify-center items-center fixed top-0 left-0 right-0 bottom-0 z-10">
                         <div onClick={() => setShowCreateForm(false)} className="absolute h-full w-full bg-black bg-opacity-50 top-0 left-0 right-0 bottom-0 z-[1] min-h-[150vh]" />
                         <CreateModule hideForm={() => setShowCreateForm(false)} className="z-[2]" courseId={router.query.courseId as string} />
                     </div>

@@ -42,3 +42,17 @@
     }
   }
 }
+.neo-dark {
+  border-radius: 20px;
+  background: #18181b;
+  box-shadow:
+    10px 10px 20px #141417,
+    -10px -10px 20px #1c1c1f;
+}
+.neo-semi-dark {
+  border-radius: 20px;
+  background: #191919;
+  box-shadow:
+    10px 10px 20px #151515,
+    -10px -10px 20px #1d1d1d;
+}

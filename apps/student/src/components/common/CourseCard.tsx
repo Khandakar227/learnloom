@@ -7,11 +7,11 @@ interface CourseCardProps extends PropsWithChildren {
 }
 function CourseCard({course}:CourseCardProps) {
   return (
-    <div className="rounded shadow shadow-black p-4 bg-[#00000073]">
-        <div className="pb-8">
-            <Image width={400} height={300} src={course.imageUrl} alt={course.name} />
+    <div className="rounded shadow shadow-black p-4 bg-[#00000073] max-w-md">
+        <div className="pb-8 mx-auto">
+            <Image width={400} height={300} src={course.imageUrl} alt={course.name} className="mx-auto" />
         </div>
-        <h3 className="text-2xl font-semibold">{course.name}</h3>
+        <h3 className="text-xl font-semibold">{course.name}</h3>
     </div>
   )
 }
