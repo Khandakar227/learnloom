@@ -21,8 +21,10 @@ async function handleGetModules(req: NextApiRequest, res: NextApiResponse) {
     try {
       const { id, short } = req.query;
       let modules;
-      if (!short) modules = await queries.getAllModules(id as string);
-      else modules = await queries.getAllModulesLittleInfo(id as string);
+      if (!short) {
+    // TODO: Implement enrollment check to access module, short info is allowed for all
+        modules = await queries.getAllModules(id as string);
+      } else modules = await queries.getAllModulesLittleInfo(id as string);
 
       res.status(200).json({ error: false, modules });
       
