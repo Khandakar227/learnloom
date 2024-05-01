@@ -37,9 +37,9 @@ export default function AddModules({course, modules}:CoursePageProps) {
             <span className="px-2 py-1 rounded-md text-xs bg-green-800 my-2">{course.category}</span>
           </p>
           <p className="text-end text-sm opacity-60"> {formatDateTime(course.createdAt)} </p>
-          {/* <div className="p-4">
+          <div className="p-4">
             <Image width={800} height={800} className="max-w-4xl mx-auto" src={course.imageUrl} alt={course.name} />
-          </div> */}
+          </div>
           <div className="p-4 pt-12">
             <div className="description" dangerouslySetInnerHTML={{__html: course.description}} />
           </div>
@@ -51,14 +51,7 @@ export default function AddModules({course, modules}:CoursePageProps) {
 
 
 export async function getServerSideProps(context:GetServerSidePropsContext) {
-  const user = await getSession(context.req, context.res);
-  if(!user)
-  return {
-    redirect: {
-      permanent: false,
-      destination: "/"
-    }
-  }
+  // TODO: Enrollments check
   const params = context.params;
   if(!params || !params.courseId) 
     return { props: { modules: null } }

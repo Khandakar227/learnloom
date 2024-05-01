@@ -56,3 +56,35 @@
     10px 10px 20px #151515,
     -10px -10px 20px #1d1d1d;
 }
+
+/* Heading Styles */
+.description h1 {
+  @apply text-3xl font-bold; /* Equivalent to font-size: 2.25rem; font-weight: 700; */
+}
+.description h2 {
+  @apply text-2xl font-bold; /* Equivalent to font-size: 1.875rem; font-weight: 700; */
+}
+.description h3 {
+  @apply text-xl font-bold; /* Equivalent to font-size: 1.5rem; font-weight: 700; */
+}
+.description h4 {
+  @apply text-lg font-bold; /* Equivalent to font-size: 1.25rem; font-weight: 700; */
+}
+.description h5 {
+  @apply font-bold; /* Equivalent to font-size: 1.125rem; font-weight: 700; */
+}
+.description h6 {
+  @apply text-sm font-bold; /* Equivalent to font-size: 1.125rem; font-weight: 700; */
+}
+/* Paragraph Styles */
+.description p {
+  @apply text-base; /* Equivalent to font-size: 1rem; */
+}
+/* Link Styles */
+.description a {
+  @apply text-blue-500 underline; /* Equivalent to color: #3b82f6; text-decoration: underline; */
+}
+/* Code Styles */
+.description code {
+  @apply inline-block px-2 py-1 bg-gray-200 rounded text-sm font-mono; /* Example code styles */
+}

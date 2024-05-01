@@ -85,15 +85,7 @@ export default Module
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-    const user = await getSession(context.req, context.res);
-    if (!user)
-        return {
-            redirect: {
-                permanent: false,
-                destination: "/"
-            }
-        }
-
+  // TODO: Enrollments check
     const params = context.params;
     if (!params || !params.courseId || !params.moduleId)
         return { props: { modules: null, course: null, module: null } }
