@@ -100,9 +100,12 @@ function CreateModule({ courseId, className, hideForm }: CreateModuleProps) {
     async function onSubmit(e: FormEvent) {
         e.preventDefault();
         try {
+            let videoUrl:string;
             const moduleId = uuid4();
-            const videoUrl = await uploadFile(moduleId, video as File);
             
+            if(video) videoUrl = await uploadFile(moduleId, video as File) as string;
+            else videoUrl = "";
+
             // send the data
             await fetch(`/api/module/${moduleId}?courseId=${courseId}`, {
                 method: 'POST',

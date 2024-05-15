@@ -9,6 +9,7 @@ import { queries } from '@repo/utils'
 import { CourseInputInfo } from '@repo/utils/types';
 import { useUploadThing } from '@repo/utils/client';
 import { toast } from 'react-toastify';
+import { useRouter } from 'next/router';
 
 type Categories = {id: string, name: string}
 
@@ -26,6 +27,7 @@ export default function AddCourse() {
   const [courseData, setCourseData] = useState(initialData);
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<Categories []>([]);
+  const router = useRouter();
   const {startUpload} = useUploadThing("courseImage");
 
 
@@ -73,8 +75,9 @@ export default function AddCourse() {
         body: JSON.stringify({...courseData, imageUrl})
       })
       console.log(courseData);
-      setLoading(false)
+      setLoading(false);
       toast.success("Course added.");
+      router.push("/courses");
     } catch (error) {
       setLoading(false);
       toast.success("[Error]: " + (error as Error).message);

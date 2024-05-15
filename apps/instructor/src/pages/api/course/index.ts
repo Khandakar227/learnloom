@@ -10,14 +10,11 @@ export default async function handler(
   try {
     switch (req.method) {
       case "POST":
-        handleAddCourse(req, res);
-        break;
+        return handleAddCourse(req, res);
       case "GET":
-        handleGetAllCourses(req, res);
-        break;
+        return handleGetAllCourses(req, res);
       default:
-        res.status(405).json({error: true, message: "Method Not Allowed"});
-        break;
+        return res.status(405).json({error: true, message: "Method Not Allowed"});
     }
   } catch (error) {
     res.status(500).json({ error: true, message: "Internal Error" });

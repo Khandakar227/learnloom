@@ -56,7 +56,7 @@ export const addCourse = async (course: Course) => {
       course.description,
       course.imageUrl,
       course.price,
-      course.isPublished,
+      course.isPublished ? 1 : 0,
       course.categoryId,
       course.instructorId,
     ]);

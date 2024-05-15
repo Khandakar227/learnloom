@@ -46,15 +46,15 @@ export default function AddModules({course, modules}:CoursePageProps) {
 
         <div className="py-12 px-4 lg:col-span-3 md:col-span-2">
           <p className={`${course.isPublished ? "text-green-400" : "text-red-400"} text-sm px-4 pb-4`}>{course.isPublished ? "Published" : "Not Published"}</p>
+          <p className="px-4 py-4 text-sm opacity-60"> {formatDateTime(course.createdAt)} </p>
           <h1 className="text-xl md:text-2xl font-semibold px-4">{course.name}</h1>
           <p className="text-lg pt-4 text-green-200 px-4">Price: {course.price ? course.price + " BDT" : "Free"}</p>
           <p className="p-4">
             <span className="px-2 py-1 rounded-md text-xs bg-green-800 my-2">{course.category}</span>
           </p>
-          <p className="text-end text-sm opacity-60"> {formatDateTime(course.createdAt)} </p>
-          {/* <div className="p-4">
-            <Image width={800} height={800} className="max-w-4xl mx-auto" src={course.imageUrl} alt={course.name} />
-          </div> */}
+          <div className="p-4">
+            <Image width={800} height={600} className="max-w-4xl mx-auto" src={course.imageUrl} alt={course.name} />
+          </div>
           <div className="p-4 pt-12">
             <div className="description" dangerouslySetInnerHTML={{__html: course.description}} />
           </div>

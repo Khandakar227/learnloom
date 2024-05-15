@@ -1,3 +1,4 @@
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 import Navbar from "@/components/common/Navbar"
 import CreateModule from "@/components/courses/CreateModule";
 import EditModule from "@/components/courses/EditModule";
@@ -16,6 +17,11 @@ type CoursePageProps = {
     modules: CourseModule[];
     course: CourseData;
     module: CourseModule;
+}
+
+function isYouTubeLink(link:string) {
+    var regexPattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+    return regexPattern.test(link);
 }
 
 function Module({ modules, course, module }: CoursePageProps) {
@@ -71,6 +77,9 @@ function Module({ modules, course, module }: CoursePageProps) {
                     <div className="p-4 shadow rounded bg-white bg-opacity-5">
                         <h1 className="py-4 md:text-4xl text-2xl">{module.name}</h1>
                         {
+                            module.videoUrl && isYouTubeLink(module.videoUrl) ?
+                            <YoutubeEmbed link={module.videoUrl}/>
+                            :
                             module.videoUrl ?
                                 <video controls className="w-full">
                                    <source src={module.videoUrl} type="video/mp4" />

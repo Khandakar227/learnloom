@@ -29,14 +29,19 @@ function Courses() {
       }, []);
 
   return (
-    <div className="p-4 shadow-sm rounded-md py-6 mt-8 block">
-        <h3 className="text-3xl py-6"> Courses </h3>
+    <div className="p-4 shadow-sm rounded-md py-6 mt-8 block neo-semi-dark">
+        <div className="flex justify-between items-center pb-5">
+            <h3 className="text-3xl py-6"> Courses </h3>
+            <div>
+                <Link href={"/courses/add"} className="py-2 px-4 bg-green-600"> Add New Course </Link>
+            </div>
+        </div>
         {
             ! courses.length && (<p className="py-12 opacity-50"> No courses has been added </p>)
         }
         {
             courses.map(course =>
-            <Link href={`/courses/${course.id}/`} key={course.id} className="neo-semi-dark p-4">
+            <Link href={`/courses/${course.id}/`} key={course.id} className="neo-dark p-4 my-6 block">
                 <h3 className="text-xl md:text-2xl font-semibold">{course.name}</h3>
                 <p className="text-xs py-2 text-end opacity-50">{formatDateTime(course.createdAt)}</p>
                 <p><span className="px-2 py-1 rounded-md text-xs bg-green-800 my-2">{course.category}</span></p>

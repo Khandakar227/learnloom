@@ -10,7 +10,7 @@ interface CourseCardProps extends PropsWithChildren {
 
 export default function CourseCard({course}:CourseCardProps) {
   return (
-    <div className="rounded shadow shadow-black p-4 bg-[#00000073]">
+    <div className="rounded shadow shadow-black p-4 bg-[#00000073] my-4">
       <div className="gap-4 grid lg:grid-cols-3 items-center md:grid-cols-2">
         <div className="pb-6">
              <img src={course.imageUrl} className="max-w-xl w-full rounded"/>
