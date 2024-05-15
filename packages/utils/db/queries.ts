@@ -89,7 +89,7 @@ export const getInstructor = async (email: string) => {
     const query = `SELECT * FROM instructor WHERE email = ?`;
     const instructor = await conn.query(query, [email]);
     console.log(`${JSON.stringify(instructor[0])}`);
-    return instructor[0];
+    return instructor[0] as any;
   } catch (error) {
     console.log(error);
   } finally {
@@ -97,6 +97,19 @@ export const getInstructor = async (email: string) => {
   }
 };
 
+export const getStudent = async (email: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT * FROM student WHERE email = ?`;
+    const student = await conn.query(query, [email]);
+    console.log(`${JSON.stringify(student[0])}`);
+    return student[0] as any;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
 export const getCategories = async () => {
   const conn = await db.getConnection();
   try {
@@ -315,19 +328,19 @@ export const getModulesCountForCourse = async (courseId:string) => {
   }
 }
 
-export const deleteCourse = async (courseId: string) => {
+export const deleteCourse = async (courseId: string, instructorId: string) => {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
 
-    const deleteEnrollments = `DELETE FROM enrolled WHERE courseID = ?`;
-    await conn.query(deleteEnrollments, [courseId]);
+    const deleteEnrollments = `DELETE FROM enrolled join course c on c.id = enrolled.courseId AND c.instructorId = ? WHERE courseID = ?`;
+    await conn.query(deleteEnrollments, [instructorId, courseId]);
 
-    const deleteModules = `DELETE FROM module WHERE courseID = ?`;
-    await conn.query(deleteModules, [courseId]);
+    const deleteModules = `DELETE FROM module join course c on c.id = module.courseId AND c.instructorId = ?  WHERE courseID = ?`;
+    await conn.query(deleteModules, [instructorId, courseId]);
 
-    const deleteCourse = `DELETE FROM course WHERE id = ?`;
-    await conn.query(deleteCourse, [courseId]);
+    const deleteCourse = `DELETE FROM course WHERE id = ? AND instructorId = ?`;
+    await conn.query(deleteCourse, [instructorId, courseId]);
 
     await conn.commit();
     console.log(`Course "${courseId}" deleted`);
@@ -351,13 +364,23 @@ export const searchCourse = async (searchTerm: string) => {
     conn.release();
   }
 };
+type PaymentInfo = {
+  courseId: string;
+  studentId: string;
+  paymentId: string;
+  amount: number;
+  paymentMethod: string;
+  phoneNo: string;
+};
 
-export const enrollStudent = async (studentId: string, courseId: string) => {
+export const enrollStudent = async (info:PaymentInfo) => {
   const conn = await db.getConnection();
   try {
     const query = `INSERT INTO enrolled (studentID, courseID) VALUES (?, ?)`;
-    await conn.query(query, [studentId, courseId]);
-    console.log(`Student with ID "${studentId}" enrolled in course "${courseId}"`);
+    await conn.query(query, [info.studentId, info.courseId]);
+    const paymentQuery = `INSERT INTO enroll_payment (studentId, courseId, paymentId, amount, paymentMethod, phoneNo) VALUES (?, ?, ?, ?, ?, ?)`;
+    await conn.query(paymentQuery, [info.studentId, info.courseId, info.paymentId, info.amount, info.paymentMethod, info.phoneNo]);
+    console.log(`Student with ID "${info.studentId}" enrolled in course "${info.courseId}"`);
   } catch (error) {
     console.log(error);
   } finally {
@@ -369,6 +392,19 @@ export const getEnrolledCourses = async (studentId: string) => {
   const conn = await db.getConnection();
   try {
     const query = `SELECT c.* FROM course c JOIN enrolled e ON c.id = e.courseID WHERE e.studentID = ?`;
+    const courses = await conn.query(query, [studentId]);
+    return courses;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const getEnrolledData = async (studentId: string, courseId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT p.* FROM enrolled e JOIN enroll_payment p ON p.courseId = e.courseId AND p.studentId = e.studentId WHERE e.studentID = ? AND e.courseID = ?`;
     const courses = await conn.query(query, [studentId]);
     return courses;
   } catch (error) {
