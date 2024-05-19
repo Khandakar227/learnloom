@@ -122,7 +122,18 @@ export const getCategories = async () => {
     conn.release();
   }
 };
-
+export const getCategoriesOfCourses = async () => {
+  const conn = await db.getConnection();
+  try {
+    const query = `select distinct c.name from course left join category c on c.id = course.categoryId`;
+    const categories = await conn.query(query);
+    return categories[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
 export const getInstructorId = async (email: string) => {
   const conn = await db.getConnection();
   try {

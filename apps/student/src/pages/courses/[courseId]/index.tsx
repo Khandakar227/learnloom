@@ -31,7 +31,10 @@ export default function AddModules({course, modules}:CoursePageProps) {
 
         <div className="py-12 px-4 lg:col-span-3 md:col-span-2">
           <p className={`${course.isPublished ? "text-green-400" : "text-red-400"} text-sm px-4 pb-4`}>{course.isPublished ? "Published" : "Not Published"}</p>
-          <h1 className="text-xl md:text-2xl font-semibold px-4">{course.name}</h1>
+          <div className="flex items-center justify-between gap-4 flex-col md:flex-row">
+            <h1 className="text-xl md:text-2xl font-semibold px-4">{course.name}</h1>
+            <Link href={`/enroll/${course.id}`} className="block px-4 py-2 bg-red-500">Enroll Now</Link>
+          </div>
           <p className="text-lg pt-4 text-green-200 px-4">Price: {course.price ? course.price + " BDT" : "Free"}</p>
           <p className="p-4">
             <span className="px-2 py-1 rounded-md text-xs bg-green-800 my-2">{course.category}</span>
