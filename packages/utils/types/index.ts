@@ -20,6 +20,17 @@ export type CourseModule = {
   updatedAt: string;
   videoUrl: string;
 };
+
+export type EnrollPayment = {
+  studentId: string,
+  courseId: string,
+  amount: number,
+  paymentMethod: string,
+  paymentId: string,
+  phoneNo: string,
+  paymentStatus: string,
+  paymentAt: string
+}
 export type ModuleInputInfo = OmitMultiple<CourseModule, "courseId" | "id" | "createdAt" | "updatedAt">
 
 export type OmitMultiple<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>;

@@ -32,15 +32,14 @@ export const addInstructor = async (student: User) => {
 export const addStudent = async (student: User) => {
   const conn = await db.getConnection();
   try {
-    const query = `INSERT INTO student (email, name) VALUES (UUID(), ?, ?)`;
+    const query = `INSERT INTO student (id, email, name) VALUES (UUID(), ?, ?)`;
     const newUser = await conn.query(query, [
       student.email,
       student.name,
       student.photoUrl,
     ]);
-    // console.log(`Student added: ${JSON.stringify(newUser)}`);
   } catch (error) {
-    // console.log(error);
+    console.log(error);
     return;
   } finally {
     conn.release();
@@ -102,8 +101,8 @@ export const getStudent = async (email: string) => {
   try {
     const query = `SELECT * FROM student WHERE email = ?`;
     const student = await conn.query(query, [email]);
-    console.log(`${JSON.stringify(student[0])}`);
-    return student[0] as any;
+    // console.log(`${JSON.stringify(student[0])}`);
+    return (student[0] as RowDataPacket)[0];
   } catch (error) {
     console.log(error);
   } finally {
@@ -125,7 +124,7 @@ export const getCategories = async () => {
 export const getCategoriesOfCourses = async () => {
   const conn = await db.getConnection();
   try {
-    const query = `select distinct c.name from course left join category c on c.id = course.categoryId`;
+    const query = `select distinct c.name, c.id from course left join category c on c.id = course.categoryId`;
     const categories = await conn.query(query);
     return categories[0];
   } catch (error) {
@@ -375,7 +374,7 @@ export const searchCourse = async (searchTerm: string) => {
     conn.release();
   }
 };
-type PaymentInfo = {
+export type PaymentInfo = {
   courseId: string;
   studentId: string;
   paymentId: string;
@@ -390,10 +389,12 @@ export const enrollStudent = async (info:PaymentInfo) => {
     const query = `INSERT INTO enrolled (studentID, courseID) VALUES (?, ?)`;
     await conn.query(query, [info.studentId, info.courseId]);
     const paymentQuery = `INSERT INTO enroll_payment (studentId, courseId, paymentId, amount, paymentMethod, phoneNo) VALUES (?, ?, ?, ?, ?, ?)`;
-    await conn.query(paymentQuery, [info.studentId, info.courseId, info.paymentId, info.amount, info.paymentMethod, info.phoneNo]);
+    const enroll = await conn.query(paymentQuery, [info.studentId, info.courseId, info.paymentId, info.amount, info.paymentMethod, info.phoneNo]);
     console.log(`Student with ID "${info.studentId}" enrolled in course "${info.courseId}"`);
+    return (enroll[0] as RowDataPacket)[0];
   } catch (error) {
     console.log(error);
+    throw error;
   } finally {
     conn.release();
   }
@@ -415,9 +416,9 @@ export const getEnrolledCourses = async (studentId: string) => {
 export const getEnrolledData = async (studentId: string, courseId: string) => {
   const conn = await db.getConnection();
   try {
-    const query = `SELECT p.* FROM enrolled e JOIN enroll_payment p ON p.courseId = e.courseId AND p.studentId = e.studentId WHERE e.studentID = ? AND e.courseID = ?`;
-    const courses = await conn.query(query, [studentId]);
-    return courses;
+    const query = `SELECT p.* FROM enroll_payment p WHERE p.studentID = ? AND p.courseID = ?`;
+    const enroll = await conn.query(query, [studentId, courseId]);
+    return (enroll[0] as RowDataPacket)[0];
   } catch (error) {
     console.log(error);
   } finally {

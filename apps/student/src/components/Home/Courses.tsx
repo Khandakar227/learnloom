@@ -73,7 +73,7 @@ const CourseCategory = ({ categories }:CourseCategoryProps) => {
     <div className="py-8 px-4 flex flex-wrap justify-center items-stretch gap-6">
       {
         categories.map(category =>
-          <button key={"category" +category.id} className="bg-green-600 shadow-md rounded-md p-2 text-xs"> {category.name} </button>
+          <button key={"category" + category.name} className="bg-green-600 shadow-md rounded-md p-2 text-xs"> {category.name} </button>
         )
       }
     </div>

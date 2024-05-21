@@ -15,11 +15,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 }
 
-function handleEnroll(req: NextApiRequest, res: NextApiResponse) {
+async function handleEnroll(req: NextApiRequest, res: NextApiResponse) {
     try {
         const { id } = req.query;
-        const { studentId, amount, paymentMethod, phoneNo, paymentId } = req.body;
-        const enroll = queries.enrollStudent({ courseId: id as string, studentId, amount, paymentMethod, phoneNo, paymentId });
+        const { amount, paymentMethod, phoneNo, paymentId } = req.body;
+        const session = await getSession(req, res);
+        
+        if (!session)
+            return res.status(403).json({ error: true, message: "Unauthorized" });
+
+        const student = await queries.getStudent(session.user.email);
+        const enroll = await queries.enrollStudent({ courseId: id as string, studentId: student.id, amount, paymentMethod, phoneNo, paymentId });
         res.status(200).json({ error: false, data: enroll });
     } catch (error) {
         console.log(error)

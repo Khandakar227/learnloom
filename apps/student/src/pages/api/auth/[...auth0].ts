@@ -9,6 +9,7 @@ export default handleAuth({
         afterCallback: async (req, res, session, state) => {
           const user = session.user;
           // store user in db
+          console.log("User: ", user);
           await queries.addStudent({ email: user.email, name: user.name });
           return session;
         },
