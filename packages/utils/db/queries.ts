@@ -7,6 +7,12 @@ export type User = {
   photoUrl?: string;
 };
 
+export interface Student extends User {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
 interface Course extends CourseInputInfo {
   instructorId: string;
 }
@@ -405,7 +411,7 @@ export const getEnrolledCourses = async (studentId: string) => {
   try {
     const query = `SELECT c.* FROM course c JOIN enrolled e ON c.id = e.courseID WHERE e.studentID = ?`;
     const courses = await conn.query(query, [studentId]);
-    return courses;
+    return courses[0] as RowDataPacket;
   } catch (error) {
     console.log(error);
   } finally {

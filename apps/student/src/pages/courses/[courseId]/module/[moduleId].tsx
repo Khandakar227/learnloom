@@ -1,5 +1,6 @@
 import Navbar from "@/components/common/Navbar";
 import YoutubeEmbed from "@/components/common/YoutubeEmbed";
+import { getSession } from "@auth0/nextjs-auth0";
 import { queries } from "@repo/utils";
 import { formatDateTime } from "@repo/utils/client";
 import { CourseData, CourseModule } from "@repo/utils/types";
@@ -16,7 +17,7 @@ type CoursePageProps = {
     module: CourseModule;
 }
 
-function isYouTubeLink(link:string) {
+function isYouTubeLink(link: string) {
     var regexPattern = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
     return regexPattern.test(link);
 }
@@ -59,17 +60,17 @@ function Module({ modules, course, module }: CoursePageProps) {
                         <h1 className="py-4 md:text-4xl text-2xl">{module.name}</h1>
                         {
                             module.videoUrl && isYouTubeLink(module.videoUrl) ?
-                            <YoutubeEmbed link={module.videoUrl}/>
-                            :
-                            module.videoUrl ?
-                                <video controls className="w-full">
-                                   <source src={module.videoUrl} type="video/mp4" />
-                                   Your browser does not support the video tag. 
-                                </video>
-                            :
-                            <div className="px-4 rounded text-black bg-white text-center py-12">
-                                Video is not available or not uploaded yet.
-                            </div>
+                                <YoutubeEmbed link={module.videoUrl} />
+                                :
+                                module.videoUrl ?
+                                    <video controls className="w-full">
+                                        <source src={module.videoUrl} type="video/mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    :
+                                    <div className="px-4 rounded text-black bg-white text-center py-12">
+                                        Video is not available or not uploaded yet.
+                                    </div>
                         }
                         <div className="py-12 description" dangerouslySetInnerHTML={{ __html: module.details }} />
                         <p className="text-end text-xs opacity-60"> {formatDateTime(module.createdAt)} </p>
@@ -87,7 +88,7 @@ export default Module
 
 
 export async function getServerSideProps(context: GetServerSidePropsContext) {
-  // TODO: Enrollments check
+    // TODO: Enrollments check
     const params = context.params;
     if (!params || !params.courseId || !params.moduleId)
         return { props: { modules: null, course: null, module: null } }
@@ -96,6 +97,18 @@ export async function getServerSideProps(context: GetServerSidePropsContext) {
     const modules = await queries.getAllModulesLittleInfo(params.courseId as string)
     const _module = await queries.getModule(params.moduleId as string)
     // console.log(course)
+
+    const session = await getSession(context.req, context.res);
+    const student = await queries.getStudent(session?.user.email as string);
+    const enroll = await queries.getEnrolledData(student.id, params.courseId as string) || null;
+    if(!enroll || enroll.paymentStatus != "paid") {
+        return {
+            redirect: {
+                destination: `/courses/${params.courseId}`,
+                permanent: false
+            }
+        }
+    }
     return {
         props: {
             modules: JSON.parse(JSON.stringify(modules)),

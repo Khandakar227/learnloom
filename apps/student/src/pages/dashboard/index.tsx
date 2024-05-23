@@ -12,11 +12,29 @@ export default function Dashboard() {
         console.log(user)
     }, [user.user, user.isLoading])
 
+    useEffect(() => {
+        if (!user.isLoading && user.user) {
+            fetch("/api/enroll")
+                .then(res => res.json())
+                .then(data => {
+                    console.log(data)
+                })
+                .catch(err => console.log(err))
+        }
+    }, [user.user, user.isLoading]);
+    
     if (user.isLoading) return <span className="loader" />
 
     return (
         <div>
             <Navbar />
+            <div className="mx-auto max-w-7xl">
+                <div className="neo-dark p-4 mt-6">
+                    <h3 className="text-3xl font-semibold">Enrolled Course</h3>
+
+                </div>
+            </div>
         </div>
     )
 }
+

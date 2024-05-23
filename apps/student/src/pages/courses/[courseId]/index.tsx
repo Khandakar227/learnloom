@@ -44,6 +44,9 @@ export default function Course({course, modules, enrolled}:CoursePageProps) {
               enrolled?.paymentStatus == "pending" ?
               <button onClick={showPending} className="block px-4 py-2 bg-green-500">Pending</button>
               :
+              enrolled?.paymentStatus == "paid" ?
+              ""
+              : 
               <Link href={`/enroll/${course.id}`} className="block px-4 py-2 bg-red-500">Enroll Now</Link>
             }
           </div>
@@ -71,9 +74,9 @@ export async function getServerSideProps(context:GetServerSidePropsContext) {
     return { props: { modules: null } }
   const course = await queries.getCourse(params.courseId as string);
   const modules = await queries.getAllModulesLittleInfo(params.courseId as string);
+
   const session = await getSession(context.req, context.res);
   const student = await queries.getStudent(session?.user.email as string);
-  // TODO: Enrollments check
-    const enroll = await queries.getEnrolledData(student.id, params.courseId as string) || null;
-    return { props: { modules: JSON.parse(JSON.stringify(modules)), course: JSON.parse(JSON.stringify(course)), enrolled: enroll ? JSON.parse(JSON.stringify(enroll)) : null } }
+  const enroll = await queries.getEnrolledData(student.id, params.courseId as string) || null;
+  return { props: { modules: JSON.parse(JSON.stringify(modules)), course: JSON.parse(JSON.stringify(course)), enrolled: enroll ? JSON.parse(JSON.stringify(enroll)) : null } }
 }
