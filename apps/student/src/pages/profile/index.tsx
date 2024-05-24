@@ -16,10 +16,14 @@ function Dashboard({user, userData}:Props) {
     const router = useRouter()
     const [userState, setUserState] = useState<queries.Student>(userData);
 
-    console.log(user, userData)
-
     function onChange(e:ChangeEvent) {
-        console.log((e.target as HTMLInputElement).value);
+        const key = (e.target as HTMLInputElement).name;
+        const value = (e.target as HTMLInputElement).value;
+        setUserState({...userState, [key]: value});
+    }
+
+    function save() {
+        console.log(userState);    
     }
     return (
         <div>
@@ -36,7 +40,7 @@ function Dashboard({user, userData}:Props) {
                     <p className="pt-6 text-sm"><span>Created At:</span> {formatDateTime(userState.createdAt)}</p>
 
                     <div className="pt-12 text-end">
-                        <button className="px-4 py-2 bg-green-500">Save</button>
+                        <button onClick={save} className="px-4 py-2 bg-green-500">Save</button>
                     </div>
                 </div>
             </div>
