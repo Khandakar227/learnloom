@@ -53,7 +53,7 @@ export default function AddModules({course, modules}:CoursePageProps) {
             <span className="px-2 py-1 rounded-md text-xs bg-green-800 my-2">{course.category}</span>
           </p>
           <div className="p-4">
-            <Image width={800} height={600} className="max-w-4xl mx-auto" src={course.imageUrl} alt={course.name} />
+            <Image width={800} height={600} className="max-w-4xl mx-auto w-full" src={course.imageUrl} alt={course.name} />
           </div>
           <div className="p-4 pt-12">
             <div className="description" dangerouslySetInnerHTML={{__html: course.description}} />

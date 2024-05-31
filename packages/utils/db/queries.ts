@@ -115,6 +115,21 @@ export const getStudent = async (email: string) => {
     conn.release();
   }
 };
+
+export const updateStudent = async (email: string, data:{name:string, photoUrl:string}) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `update student set name = ?, photoUrl = ? where email = ?`;
+    const student = await conn.query(query, [data.name, data.photoUrl, email]);
+    console.log(`${JSON.stringify(student[0])}`);
+    return (student[0] as RowDataPacket)[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
 export const getCategories = async () => {
   const conn = await db.getConnection();
   try {
@@ -431,6 +446,50 @@ export const getEnrolledData = async (studentId: string, courseId: string) => {
     conn.release();
   }
 };
+
+export const getEnrolledCount = async (email:string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `select count(studentId) as count from enroll_payment as e join course c on c.id = e.courseId join instructor i on i.id = c.instructorId where i.email = ?`;
+    const count = await conn.query(query, [email]);
+    return (count[0] as RowDataPacket)[0];
+  } catch (error) {
+    console.log(error);
+  } finally {
+
+  }
+}
+
+export const getEnrolledStudentCountByCourse = async (email:string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `select count(studentId) as count, c.name, c.id from enroll_payment as e right join course c on c.id = e.courseId join instructor i on i.id = c.instructorId where i.email = ? group by c.name;`;
+    const count = await conn.query(query, [email]);
+    return (count[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+  } finally {
+
+  }
+}
+
+export const getEnrolledStudentsByCourse = async (email:string, courseId="") => {
+  const conn = await db.getConnection();
+  try {
+    let query = `select s.name, s.email, c.name as courseName, e.* from enroll_payment as e join course c on c.id = e.courseId join instructor i on i.id = c.instructorId join student s on s.id = e.studentId where i.email = ?`;
+    let values = [email];
+    if(courseId) {
+      query +=  " and e.courseId = ?";
+      values.push(courseId);
+    }
+    const students = await conn.query(query, values);
+    return (students[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+  } finally {
+
+  }
+}
 
 export const publishCourse = async (courseId: string, isPublished: boolean) => {
   const conn = await db.getConnection();
