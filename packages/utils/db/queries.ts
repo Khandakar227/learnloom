@@ -424,7 +424,7 @@ export const enrollStudent = async (info:PaymentInfo) => {
 export const getEnrolledCourses = async (studentId: string) => {
   const conn = await db.getConnection();
   try {
-    const query = `SELECT c.* FROM course c JOIN enrolled e ON c.id = e.courseID WHERE e.studentID = ?`;
+    const query = `SELECT c.*, e.paymentStatus, category.name as category FROM course c JOIN enroll_payment e ON c.id = e.courseID JOIN category ON category.id = c.categoryId WHERE e.studentID = ?`;
     const courses = await conn.query(query, [studentId]);
     return courses[0] as RowDataPacket;
   } catch (error) {
