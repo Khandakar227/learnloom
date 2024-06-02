@@ -195,6 +195,34 @@ export const getCourse = async (id: string) => {
   }
 };
 
+export const getCoursesByCategory = async (category: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT course.*, category.name as category FROM course JOIN category on category.id = course.categoryId JOIN instructor on instructor.id = course.instructorId where category.name = ?`;
+    const courses = await conn.query(query, [category]);
+    return (courses[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+    return [];
+  } finally {
+    conn.release();
+  }
+};
+
+
+export const searchCourses = async ({keyword="", limit=20, offset=0}) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT course.*, category.name as category FROM course JOIN category on category.id = course.categoryId JOIN instructor on instructor.id = course.instructorId where course.name LIKE ? OR category.name LIKE ? OR instructor.name LIKE ?  OR instructor.email LIKE ? ORDER BY course.updatedAt DESC limit ? offset ?`;
+    const courses = await conn.query(query, [`%${keyword}%`, `%${keyword}%`, `%${keyword}%`, `%${keyword}%`, limit, offset]);
+    return (courses[0] as RowDataPacket);
+  } catch (error) {
+    console.log(error);
+    return [];
+  } finally {
+    conn.release();
+  }
+};
 export const updateCourse = async (id: string, course: CourseInputInfo) => {
   const conn = await db.getConnection();
   try {
@@ -402,6 +430,7 @@ export type PaymentInfo = {
   amount: number;
   paymentMethod: string;
   phoneNo: string;
+  paymentStatus: string;
 };
 
 export const enrollStudent = async (info:PaymentInfo) => {
@@ -409,8 +438,8 @@ export const enrollStudent = async (info:PaymentInfo) => {
   try {
     const query = `INSERT INTO enrolled (studentID, courseID) VALUES (?, ?)`;
     await conn.query(query, [info.studentId, info.courseId]);
-    const paymentQuery = `INSERT INTO enroll_payment (studentId, courseId, paymentId, amount, paymentMethod, phoneNo) VALUES (?, ?, ?, ?, ?, ?)`;
-    const enroll = await conn.query(paymentQuery, [info.studentId, info.courseId, info.paymentId, info.amount, info.paymentMethod, info.phoneNo]);
+    const paymentQuery = `INSERT INTO enroll_payment (studentId, courseId, paymentId, amount, paymentMethod, phoneNo, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+    const enroll = await conn.query(paymentQuery, [info.studentId, info.courseId, info.paymentId, info.amount, info.paymentMethod, info.phoneNo, info.paymentStatus || "pending"]);
     console.log(`Student with ID "${info.studentId}" enrolled in course "${info.courseId}"`);
     return (enroll[0] as RowDataPacket)[0];
   } catch (error) {
@@ -503,3 +532,29 @@ export const publishCourse = async (courseId: string, isPublished: boolean) => {
     conn.release();
   }
 };
+
+export const getForumMessages = async (courseId: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `SELECT f.*, s.name as senderName FROM forum_message f JOIN student s on s.id = f.studentId WHERE courseId = ? ORDER BY createdAt ASC`;
+    const messages = await conn.query(query, [courseId]);
+    return messages[0] as RowDataPacket;
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+};
+
+export const addForumMessage = async (courseId: string, studentId: string, message: string) => {
+  const conn = await db.getConnection();
+  try {
+    const query = `INSERT INTO forum_message (courseId, studentId, text) VALUES (?, ?, ?)`;
+    await conn.query(query, [courseId, studentId, message]);
+    console.log(`Message added to forum for course "${courseId}"`);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    conn.release();
+  }
+}

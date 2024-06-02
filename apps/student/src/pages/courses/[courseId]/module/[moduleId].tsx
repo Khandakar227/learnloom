@@ -75,6 +75,15 @@ function Module({ modules, course, module }: CoursePageProps) {
                         <div className="py-12 description" dangerouslySetInnerHTML={{ __html: module.details }} />
                         <p className="text-end text-xs opacity-60"> {formatDateTime(module.createdAt)} </p>
                     </div>
+                    {
+                    <div className="py-12">
+                        <hr className="my-6" />
+                        <h3 className="text-center text-2xl font-semibold py-2">Join the Community</h3>
+                        <div className="text-center">
+                        <Link href={`/courses/${course.id}/forum`} className="block w-max py-2 px-4 rounded-md bg-purple-500 mt-6 mx-auto"> Go to Forum </Link>
+                        </div>
+                    </div>
+                    }
                 </div>
             </div>
         </div>

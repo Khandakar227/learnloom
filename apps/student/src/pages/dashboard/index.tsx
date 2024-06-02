@@ -36,7 +36,7 @@ export default function Dashboard() {
     if (user.isLoading) return <span className="loader" />
 
     return (
-        <div>
+        <div className="min-h-screen">
             <Navbar />
             <div className="mx-auto max-w-7xl">
                 <div className="neo-dark p-4 mt-6">

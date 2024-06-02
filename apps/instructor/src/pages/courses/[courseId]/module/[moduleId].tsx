@@ -61,7 +61,7 @@ function Module({ modules, course, module }: CoursePageProps) {
                             </div>
                         </div>
                         {
-                            modules.map((m, i) => <Link href={`/courses/${course.id}/module/${m.id}`} key={m.name + i} className={`${module.id == m.id ? "bg-green-700" : ""} block text-start text-lg w-full border-b p-4`}>{m.orderNo}. {m.name} </Link>)
+                            modules.map((m, i) => <Link href={`/courses/${course.id}/module/${m.id}`} key={m.name + i} className={`${module.id == m.id ? "bg-green-700" : ""} text-nowrap overflow-hidden text-ellipsis block text-start text-lg w-full border-b p-4`}>{m.orderNo}. {m.name} </Link>)
                         }
                     </div>
                 </div>

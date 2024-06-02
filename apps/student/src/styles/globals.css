@@ -88,3 +88,12 @@
 .description code {
   @apply inline-block px-2 py-1 bg-gray-200 rounded text-sm font-mono; /* Example code styles */
 }
+
+
+.ql-toolbar.ql-snow {
+  font-family: "Poppins", sans-serif !important;
+}
+
+.ql-editor {
+  min-height: 100px;
+}

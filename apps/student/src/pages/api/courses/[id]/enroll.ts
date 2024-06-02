@@ -25,7 +25,8 @@ async function handleEnroll(req: NextApiRequest, res: NextApiResponse) {
             return res.status(403).json({ error: true, message: "Unauthorized" });
 
         const student = await queries.getStudent(session.user.email);
-        const enroll = await queries.enrollStudent({ courseId: id as string, studentId: student.id, amount, paymentMethod, phoneNo, paymentId });
+        const course = await queries.getCourse(id as string);
+        const enroll = await queries.enrollStudent({ courseId: id as string, studentId: student.id, amount, paymentMethod, phoneNo, paymentId, paymentStatus: course.price ? "pending" : "paid" });
         res.status(200).json({ error: false, data: enroll });
     } catch (error) {
         console.log(error)
